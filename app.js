@@ -6,6 +6,7 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const chalk = require('chalk');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
 
@@ -15,6 +16,7 @@ db.on('error', error => console.error(error));
 db.once('open', () => console.log('Connected to mongoose'));
 
 const indexRouter = require('./routes/index');
+const authorRouter = require('./routes/author');
 
 const app = express();
 
@@ -25,7 +27,9 @@ app.set('views', 'views');
 app.set('layout', 'layouts/layout');
 app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
 
 app.use('/', indexRouter);
+app.use('/authors', authorRouter);
 
 app.listen(PORT, () => console.log(`Listening on PORT ${chalk.green(PORT)}`));
